@@ -1,8 +1,7 @@
-# 🍹 Mix It Up
+# <img src="assets/appIcon.png" alt="Mix It Up" width="64" height="64">   Mix It Up
 
 A React Native cocktail app designed for party experimentation. Users can quickly discover cocktail recipes, filter by available spirits, and save favorites - perfect for beginners who want to try something new at parties.
 
-![Mix It Up](assets/appIcon.png)
 
 ## 🛠️ Tech Stack
 
@@ -34,4 +33,3 @@ A React Native cocktail app designed for party experimentation. Users can quickl
 ```bash
 npm install
 npx expo start
-Built as a demonstration of modern React Native development practices and clean mobile UI/UX design.
