@@ -27,7 +27,7 @@ const FavoritesModal = ({
             accessibilityRole="button"
             accessibilityLabel="Close favorites"
           >
-            <Ionicons name="close" size={28} color={colors.text} />
+            <Ionicons name="close" size={28} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
         
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.primaryDark,
+    color: colors.primaryTint,
   },
   closeButton: {
     padding: 4,

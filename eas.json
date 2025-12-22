@@ -9,10 +9,7 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal",
-      "env": {
-        "EXPO_PUBLIC_API_SECRET": "your_secret_here"
-      }
+      "distribution": "internal"
     },
     "production": {
       "autoIncrement": true,

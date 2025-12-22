@@ -9,6 +9,8 @@ import CategoryBadge from '../components/CategoryBadge';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
 import { Alert } from 'react-native';
+import { colors } from '../Colors';
+
 
 function CocktailDetailScreen({ route, navigation }) {
   const { cocktail } = route.params;
@@ -25,14 +27,14 @@ function CocktailDetailScreen({ route, navigation }) {
             onPress={() => navigation.navigate('UpsertCocktail', { cocktail: cocktail })}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="pencil" size={32} color="black" />
+            <Ionicons name="pencil" size={32} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleDeleteCocktail(cocktail.id)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="trash" size={32} color="black" />
+            <Ionicons name="trash" size={32} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
       ),
@@ -118,7 +120,7 @@ export default CocktailDetailScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   },
   titleRow: {
     padding: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background ,
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
@@ -147,10 +149,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1, 
     marginRight: 16,
+    color: colors.onBackground,
   },
   categoryText: {
     fontSize: 18,
-    color: 'white',
+    color: colors.onBackground,
   },
   categoryBadge: {
     paddingHorizontal: 12,
@@ -171,17 +174,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginHorizontal: 12,
     marginTop: 12,
+    color: colors.onBackground,
   },
   ingredientText: {
     fontSize: 16,
     marginHorizontal: 12,
     marginTop: 4,
+    color: colors.onBackground,
   },
   instructionText: {
     fontSize: 16,
     marginHorizontal: 12,
     marginTop: 4,
     marginBottom: 12,
+    color: colors.onBackground,
   },
   iconList: {
     flexDirection: 'row',

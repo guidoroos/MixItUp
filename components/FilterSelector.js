@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: colors.primaryDark,
+    color: colors.primaryTint,
   },
   buttonContainer: {
     flexDirection: 'row',

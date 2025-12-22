@@ -17,9 +17,9 @@ export default function Navigation() {
       screenOptions={{
       
         headerStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: colors.toolbar,
         },
-        headerTintColor: 'black', 
+        headerTintColor: colors.onToolbar,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -31,7 +31,7 @@ export default function Navigation() {
                 fontSize: 24, 
                 fontWeight: 'bold', 
                 marginLeft: 8,
-                color: colors.primaryDark
+                color: colors.primaryTint
             }}>
                 Mix it up
             </Text>

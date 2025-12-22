@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   categoryText: {
-    color: colors.background,
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: '600',
   }

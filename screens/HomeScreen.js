@@ -8,6 +8,7 @@ import FavoritesModal from '../components/FavoritesModal';
 import { colors } from '../Colors';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useMemo } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 function HomeScreen({ navigation, route }) {
@@ -24,8 +25,19 @@ function HomeScreen({ navigation, route }) {
     [cocktails, favoriteContext.favoriteIds]
   );
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+  useFocusEffect(
+    useCallback(() => {
+      // Always check on focus
+      const checkAndReload = async () => {
+        if (cocktails.length === 0) {
+          const allCocktails = await getAllCocktailsFromDB();
+          setCocktails(allCocktails);
+        }
+      };
+
+      checkAndReload();
+
+      // Handle params
       if (route.params?.savedCocktail) {
         handleCocktailSaved(route.params.savedCocktail);
         navigation.setParams({ savedCocktail: undefined });
@@ -35,10 +47,8 @@ function HomeScreen({ navigation, route }) {
         handleDeleteCocktail(deletedId);
         navigation.setParams({ deletedId: undefined });
       }
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+    }, [cocktails.length, route.params])
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,7 +58,7 @@ function HomeScreen({ navigation, route }) {
             onPress={() => handleFilterPress()}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="funnel-outline" size={28} color="black" />
+            <Ionicons name="funnel-outline" size={28} color={colors.onToolbar} />
             {selectedFilter !== null && (
               <View
                 style={{
@@ -68,14 +78,14 @@ function HomeScreen({ navigation, route }) {
             onPress={() => navigation.navigate('UpsertCocktail')}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="add" size={36} color="black" />
+            <Ionicons name="add" size={36} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setIsFavoritesModalVisible(true)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="star-outline" size={30} color="black" />
+            <Ionicons name="star-outline" size={30} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
       ),

@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         marginBottom: 40,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: colors.background,
     },
     scrollView: {
         flex: 1,
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: '700',
-        color: '#1a1a1a',
+        color: colors.onToolbar,
         marginBottom: 16,
         textAlign: 'center',
     },
@@ -294,18 +294,18 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: colors.onBackground,
         marginBottom: 8,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#e1e5e9',
+        borderColor: colors.border,
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 12,
         fontSize: 16,
-        backgroundColor: '#fff',
-        color: '#1a1a1a',
+        backgroundColor: colors.container,
+        color: colors.onContainer,
     },
     textArea: {
         minHeight: 100,

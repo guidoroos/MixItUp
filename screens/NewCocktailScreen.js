@@ -17,8 +17,9 @@ function NewCocktailScreen({ navigation, route }) {
       navigation.navigate('Cocktails');
       return;
     }
-
-    navigation.replace('CocktailDetail', { cocktail: cocktail });
+    
+    navigation.navigate('Cocktails', { savedCocktail: cocktail });
+    navigation.navigate('CocktailDetail', { cocktail: cocktail });
   };
 
   return (

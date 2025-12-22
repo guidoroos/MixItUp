@@ -31,7 +31,7 @@ const FilterModal = ({
             accessibilityRole="button"
             accessibilityLabel="Close filter"
           >
-            <Ionicons name="close" size={28} color={colors.text} />
+            <Ionicons name="close" size={28} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
         
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.text,
+    color: colors.onToolbar,
   },
   closeButton: {
     padding: 4,
