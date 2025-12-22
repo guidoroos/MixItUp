@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 export default {
   expo: {
     name: "Mix it up",
@@ -47,7 +49,7 @@ export default {
       eas: {
         projectId: "f9392efa-8cbe-4348-806d-1ab61d325ff5"
       },
-      apiSecret: process.env.APISECRET
+      apiSecret: process.env.API_SECRET
     }
   }
 };
