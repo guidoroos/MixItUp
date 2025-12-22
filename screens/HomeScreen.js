@@ -170,6 +170,8 @@ function HomeScreen({ navigation, route }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search cocktails..."
+          placeholderTextColor={"#999"}
+          color={colors.content}
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
