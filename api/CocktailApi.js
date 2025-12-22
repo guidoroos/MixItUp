@@ -14,7 +14,6 @@ export async function getCocktailsByFirstLetter(letter) {
             .filter(drink => drink && drink.idDrink)
             .map(drink => new Cocktail(drink, true)) : [];
     } catch (error) {
-        console.error(`error fetching cocktails for letter ${letter}:`, error);
         return [];
     }
 }
@@ -22,7 +21,6 @@ export async function getCocktailsByFirstLetter(letter) {
 export async function getAllCocktails() {
     //no api for full list, so we fetch by letter
     const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    console.log('Fetching cocktails from API...');
 
     const letterPromises = letters.map(async letter => {
         const drinks = await getCocktailsByFirstLetter(letter);

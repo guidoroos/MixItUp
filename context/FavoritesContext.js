@@ -27,7 +27,6 @@ export function FavoritesContextProvider({ children }) {
             await setAsFavorite(id, 1);
             setIds((currentIds) => [...currentIds, id]);
         } catch (error) {
-            console.error("Error adding favorite:", error);
         }
     }
 
@@ -36,7 +35,6 @@ export function FavoritesContextProvider({ children }) {
             await setAsFavorite(id, 0);
             setIds((currentIds) => currentIds.filter((currentId) => currentId !== id));
         } catch (error) {
-            console.error("Error removing favorite:", error);
         }
     }
 

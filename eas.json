@@ -1,0 +1,29 @@
+{
+  "cli": {
+    "version": ">= 16.28.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_SECRET": "your_secret_here"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "cache": {
+          "disabled": true
+        }
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

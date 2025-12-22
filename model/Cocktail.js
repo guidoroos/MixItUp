@@ -2,7 +2,6 @@
 class Cocktail {
   constructor(data, fromApi = false) {
     if (data == null || data.idDrink == null) {
-      console.log('API data is null or missing idDrink. Cannot create Cocktail instance.');
       return null;
     }
 

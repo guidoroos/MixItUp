@@ -85,12 +85,10 @@ function HomeScreen({ navigation, route }) {
 
   useEffect(() => {
     const loadCocktails = async () => {
-      console.log('Loading cocktails from DB');
 
-      if (cocktails.length === 0) {
-        const allCocktails = await getAllCocktailsFromDB();
-        setCocktails(allCocktails);
-      }
+      const allCocktails = await getAllCocktailsFromDB();
+      setCocktails(allCocktails);
+
     };
 
     loadCocktails();
@@ -199,7 +197,6 @@ function HomeScreen({ navigation, route }) {
           navigation.navigate('CocktailDetail', { cocktail });
         }}
         onRemoveFavorite={(id) => {
-          console.log('Removing favorite from modal:', id);
           favoriteContext.setFavorite(id, false);
         }}
       />

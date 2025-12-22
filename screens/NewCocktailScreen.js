@@ -14,7 +14,6 @@ function NewCocktailScreen({ navigation, route }) {
     try {
          await upsertCocktail(cocktail);
     } catch (error) {
-      console.error('Error setting favorite status:', error);
       navigation.navigate('Cocktails');
       return;
     }

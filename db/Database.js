@@ -37,7 +37,6 @@ export async function initializeDatabase() {
             )
         `);
     } catch (error) {
-        console.log('Error creating table:', error);
     };
 }
 
