@@ -9,16 +9,21 @@ import { colors } from '../Colors';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useMemo } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import { useLoad } from '../context/LoadContext';
+import { ActivityIndicator, Text } from 'react-native';
+import { getCocktailDetails } from '../api/CocktailApi';
+import { getCocktailIdsByCategory } from '../api/CocktailApi';
+import { getCocktailIdsByIngredient } from '../api/CocktailApi';
 
 
 function HomeScreen({ navigation, route }) {
-  const [cocktails, setCocktails] = useState([]);
   const [filteredCocktails, setFilteredCocktails] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isFavoritesModalVisible, setIsFavoritesModalVisible] = useState(false);
   const favoriteContext = useContext(FavoritesContext);
+  const { loading, error, cocktails, handleDelete, handleSave } = useLoad();
 
   const favoriteCocktails = useMemo(() =>
     cocktails.filter(cocktail => favoriteContext.favoriteIds?.includes(cocktail.id)),
@@ -27,25 +32,14 @@ function HomeScreen({ navigation, route }) {
 
   useFocusEffect(
     useCallback(() => {
-      // Always check on focus
-      const checkAndReload = async () => {
-        if (cocktails.length === 0) {
-          const allCocktails = await getAllCocktailsFromDB();
-          setCocktails(allCocktails);
-        }
-      };
-
-      checkAndReload();
-
-      // Handle params
       if (route.params?.savedCocktail) {
-        handleCocktailSaved(route.params.savedCocktail);
-        navigation.setParams({ savedCocktail: undefined });
+        handleSave(route.params.savedCocktail);
+        navigation.setParams({ savedCocktail: null });
       }
       if (route.params?.deletedId) {
         const deletedId = route.params.deletedId;
-        handleDeleteCocktail(deletedId);
-        navigation.setParams({ deletedId: undefined });
+        handleDelete(deletedId);
+        navigation.setParams({ deletedId: null });
       }
     }, [cocktails.length, route.params])
   );
@@ -63,10 +57,10 @@ function HomeScreen({ navigation, route }) {
               <View
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: 8,
-                  height: 8,
+                  top: -2,
+                  right: -2,
+                  width: 10,
+                  height: 10,
                   borderRadius: 4,
                   backgroundColor: 'red',
                 }}
@@ -92,36 +86,28 @@ function HomeScreen({ navigation, route }) {
     });
   }, [navigation, selectedFilter]);
 
-
-  useEffect(() => {
-    const loadCocktails = async () => {
-
-      const allCocktails = await getAllCocktailsFromDB();
-      setCocktails(allCocktails);
-
-    };
-
-    loadCocktails();
-  }, []);
-
   useEffect(() => {
     if (cocktails.length === 0) return;
 
-    const filterCocktails = () => {
+    const filterCocktails = async () => {
       let filtered = cocktails.filter(cocktail =>
         cocktail.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
       if (selectedFilter) {
         if (selectedFilter.spirit) {
+          const ids = await getCocktailIdsByIngredient(selectedFilter.spirit);
+
           filtered = filtered.filter(cocktail =>
-            cocktail.ingredientList.some(ing => ing.name === selectedFilter.spirit)
+            ids.includes(cocktail.id)
           );
         }
         if (selectedFilter.type) {
-          filtered = filtered.filter(cocktail =>
-            cocktail.category === selectedFilter.type
-          );
+          const ids = await getCocktailIdsByCategory(selectedFilter.type);
+
+          filtered = filtered.filter(cocktail => {
+            return ids.includes(cocktail.id);
+          });
         }
       }
 
@@ -144,28 +130,27 @@ function HomeScreen({ navigation, route }) {
     setSelectedFilter(spirit);
   };
 
-  const handleCocktailSaved = (savedCocktail) => {
-    const index = cocktails.findIndex(c => c.id === savedCocktail.id);
-    let updatedCocktails = [...cocktails];
+  
 
-    if (index !== -1) {
-      // Update existing cocktail
-      updatedCocktails[index] = savedCocktail;
-    } else {
-      // Add new cocktail
-      updatedCocktails.push(savedCocktail);
-    }
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
-    setCocktails(updatedCocktails);
-  };
-
-  const handleDeleteCocktail = (deletedId) => {
-    setCocktails(prevCocktails => prevCocktails.filter(c => c.id !== deletedId));
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -187,7 +172,11 @@ function HomeScreen({ navigation, route }) {
       <CocktailList
         style={styles.cocktailList}
         cocktails={filteredCocktails}
-        onPressCocktail={cocktail => navigation.navigate('CocktailDetail', { cocktail })}
+        onPressCocktail={async cocktail => {
+          let details = await getCocktailDetails(cocktail);
+          console.log("details:", details);
+          navigation.navigate('CocktailDetail', { cocktail: details })
+        }}
         onSetFavorite={(cocktail, isFavorite) => {
           favoriteContext.setFavorite(cocktail.id, isFavorite);
         }}
@@ -204,9 +193,11 @@ function HomeScreen({ navigation, route }) {
         visible={isFavoritesModalVisible}
         onClose={() => setIsFavoritesModalVisible(false)}
         cocktails={favoriteCocktails}
-        onPressCocktail={cocktail => {
-          setIsFavoritesModalVisible(false);
-          navigation.navigate('CocktailDetail', { cocktail });
+        onPressCocktail={async cocktail => {
+      
+           let details = await getCocktailDetails(cocktail);
+          navigation.navigate('CocktailDetail', { cocktail: details });
+            setIsFavoritesModalVisible(false);
         }}
         onRemoveFavorite={(id) => {
           favoriteContext.setFavorite(id, false);
@@ -254,5 +245,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     marginRight: 8,
+  },
+  loadingText: {
+    marginTop: 8,
+    fontSize: 16,
+    color: colors.onBackground,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
   },
 });

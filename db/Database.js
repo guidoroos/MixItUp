@@ -1,24 +1,32 @@
-
 import * as SQLite from 'expo-sqlite';
 import Cocktail from '../model/Cocktail';
+import CocktailDetails from '../model/CocktailDetails';
 
 const db = SQLite.openDatabaseSync('cocktails.db');
 
 export async function initializeDatabase() {
     try {
-         await db.execAsync(`
+        await db.execAsync(`
             CREATE TABLE IF NOT EXISTS cocktails (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id TEXT PRIMARY KEY,
                 name TEXT,
-                category TEXT,
-                instructions TEXT,
                 imageUrl TEXT,
-                glass TEXT,
-                dateAdded TEXT DEFAULT CURRENT_TIMESTAMP,
+                isUserGenerated INTEGER DEFAULT 0,
                 isFavorite INTEGER DEFAULT 0
             )
         `);
 
+        await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS cocktail_details (
+                id TEXT PRIMARY KEY,
+                category TEXT,
+                instructions TEXT,
+                glass TEXT,
+                FOREIGN KEY (id) REFERENCES cocktails (id) ON DELETE CASCADE
+            )
+        `);
+
+        // Ingredients table
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS ingredients (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,43 +34,176 @@ export async function initializeDatabase() {
             )
         `);
 
+        // Join table for cocktails and ingredients
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS cocktail_ingredients (
-                cocktailId INTEGER NOT NULL,
+                cocktailId TEXT NOT NULL,
                 ingredientId INTEGER NOT NULL,
                 measure TEXT,
-                FOREIGN KEY (cocktailId) REFERENCES cocktails (id) ON DELETE CASCADE,
+                FOREIGN KEY (cocktailId) REFERENCES cocktails (idDrink) ON DELETE CASCADE,
                 FOREIGN KEY (ingredientId) REFERENCES ingredients (id) ON DELETE CASCADE,
                 UNIQUE(cocktailId, ingredientId)
             )
         `);
     } catch (error) {
-    };
+        console.log("Database initialization error:", error);
+    }
 }
 
 export async function upsertCocktail(cocktail) {
-        let cocktailId;
-        const isFavoriteValue = cocktail.isFavorite === true ? 1 : 0;
+    const isFavoriteValue = cocktail.isFavorite === true ? 1 : 0;
+    const isUserGeneratedValue = cocktail.isUserGenerated === true ? 1 : 0;
 
-        if (cocktail.id != null) {
+    try {
+        // Check if cocktail exists
+        const existing = await db.getFirstAsync(`
+            SELECT id FROM cocktails WHERE id = ?
+        `, [cocktail.id]);
+
+        if (existing) {
             // UPDATE existing
             await db.runAsync(`
                 UPDATE cocktails
-                SET name = ?, category = ?, instructions = ?, imageUrl = ?, glass = ?, isFavorite = ?
+                SET name = ?, imageUrl = ?, isFavorite = ?, isUserGenerated = ?
                 WHERE id = ?
-            `, [cocktail.name, cocktail.category, cocktail.instructions, cocktail.imageUrl, cocktail.glass, isFavoriteValue, cocktail.id]);
-            cocktailId = cocktail.id;
+            `, [cocktail.name, cocktail.imageUrl, isFavoriteValue, isUserGeneratedValue, cocktail.id]);
         } else {
             // INSERT new
-            const result = await db.runAsync(`
-                INSERT INTO cocktails (name, category, instructions, imageUrl, glass, isFavorite)
-                VALUES (?, ?, ?, ?, ?, ?)
-            `, [cocktail.name, cocktail.category, cocktail.instructions, cocktail.imageUrl, cocktail.glass, isFavoriteValue]);
-            cocktailId = result.lastInsertRowId;
+            await db.runAsync(`
+                INSERT INTO cocktails (id, name, imageUrl, isFavorite, isUserGenerated)
+                VALUES (?, ?, ?, ?, ?)
+            `, [cocktail.id, cocktail.name, cocktail.imageUrl, isFavoriteValue, isUserGeneratedValue]);
+        }
+    } catch (error) {
+        console.log("Error upserting cocktail:", error);
+    }
+}
+
+export async function getAllCocktailsFromDB() {
+    try {
+
+        const results = db.getAllSync(`
+            SELECT id, name, imageUrl, isUserGenerated, isFavorite FROM cocktails
+            ORDER BY name
+        `);
+
+
+        return results.map(row =>
+            new Cocktail(
+                row.name,
+                row.imageUrl,
+                row.id,
+                row.isUserGenerated === 1,
+                row.isFavorite === 1
+            ));
+    } catch (error) {
+        console.log("Error getting all cocktails:", error);
+        return [];
+    }
+}
+
+export async function deleteCocktail(cocktailId) {
+    try {
+        await db.runAsync(`
+            DELETE FROM cocktails WHERE id = ?
+        `, [cocktailId]);
+    } catch (error) {
+        console.log("Error deleting cocktail:", error);
+    }
+}
+
+export function getCocktailById(cocktailId) {
+    try {
+        const cocktail = db.getFirstSync(`
+            SELECT id, name, imageUrl, isUserGenerated, isFavorite FROM cocktails WHERE id = ?
+        `, [cocktailId]);
+
+        if (!cocktail) return null;
+
+        return new Cocktail(
+            cocktail.name,
+            cocktail.imageUrl,
+            cocktail.id,
+            cocktail.isUserGenerated === 1,
+            cocktail.isFavorite === 1
+        );
+    } catch (error) {
+        console.log("Error getting cocktail by ID:", error);
+        return null;
+    }
+}
+
+export function isCocktailTableEmpty() {
+    try {
+        const result = db.getFirstSync(`
+            SELECT COUNT(*) as count FROM cocktails
+        `);
+        return Number(result.count) === 0;
+    } catch (error) {
+        console.log("Error checking if table is empty:", error);
+        return true;
+    }
+}
+
+export async function setAsFavorite(cocktailId, isFavorite) {
+    try {
+        const isFavoriteValue = isFavorite ? 1 : 0;
+        await db.runAsync(`
+            UPDATE cocktails
+            SET isFavorite = ?
+            WHERE id = ?
+        `, [isFavoriteValue, cocktailId]);
+    } catch (error) {
+        console.log("Error setting favorite status:", error);
+    }
+}
+
+export async function getFavoriteCocktails() {
+    try {
+        const results = db.getAllSync(`
+            SELECT id, name, imageUrl, isUserGenerated, isFavorite FROM cocktails WHERE isFavorite = 1
+        `);
+
+        return results.map(row => new Cocktail(
+            row.name,
+            row.imageUrl,
+            row.id,
+            row.isUserGenerated === 1,
+            row.isFavorite === 1
+        ));
+    } catch (error) {
+        console.log("Error getting favorite cocktails:", error);
+        return [];
+    }
+}
+
+export async function upsertUserGenerated(cocktail) {
+    try {
+        let cocktailId = cocktail.id;
+        const isNew = !cocktailId;
+
+        // If this is a new cocktail, generate an ID
+        if (isNew) {
+            // Create a unique ID for user-generated cocktails
+            // Prefix with 'user-' to distinguish from API cocktails
+            cocktailId = `user-${Date.now()}`;
         }
 
+        // Create the cocktail object
+        const cocktailBase = new Cocktail(
+            cocktail.name,
+            cocktail.imageUrl,
+            cocktailId,
+            true,
+            cocktail.isFavorite,
+        );
 
-        // Clear existing ingredients for this cocktail
+        upsertCocktail(cocktailBase);
+
+        console.log("Upserting user-generated cocktail details for ID:", cocktail);
+        await db.runAsync(`INSERT OR IGNORE INTO cocktail_details (id, category, instructions, glass) VALUES (?, ?, ?, ?)`,
+            [cocktailId, cocktail.category, cocktail.instructions, cocktail.glass]);
+
         await db.runAsync(`DELETE FROM cocktail_ingredients WHERE cocktailId = ?`, [cocktailId]);
 
 
@@ -77,89 +218,61 @@ export async function upsertCocktail(cocktail) {
             await db.runAsync(`INSERT OR IGNORE INTO cocktail_ingredients VALUES (?, ?, ?)`,
                 [cocktailId, ingredientResult.id, ing.measure]);
         }
+
+        return cocktailId;
+    } catch (error) {
+        console.log("Error saving user-generated cocktail:", error);
+        throw error;
+    }
 }
 
-export async function getAllCocktailsFromDB() {
+/**
+ * Get complete details for a user-generated cocktail
+ * @param {string} cocktailId The ID of the cocktail
+ * @returns {Object} Combined cocktail with thumbnail and detail info
+ */
+export async function getDetailsForUserGenerated(cocktailId) {
+    try {
+        // Get basic info
+        const thumb = getCocktailById(cocktailId);
+        console.log("User-generated cocktail thumb:", thumb);
+        if (!thumb) return null;
 
-    const results = db.getAllSync(`
-        SELECT 
-            c.id,
-            c.name,
-            c.category,
-            c.instructions,
-            c.imageUrl,
-            c.glass,
-            c.isFavorite,
-            GROUP_CONCAT(i.name || '|' || COALESCE(ci.measure, ''), '; ') as ingredients
-        FROM cocktails c
-        LEFT JOIN cocktail_ingredients ci ON c.id = ci.cocktailId
-        LEFT JOIN ingredients i ON ci.ingredientId = i.id
-        GROUP BY c.id
-        ORDER BY c.name
-    `);
+        // Get details
+        const details = await db.getFirstAsync(`
+            SELECT category, instructions, glass
+            FROM cocktail_details
+            WHERE id = ?
+        `, [cocktailId]);
 
-    return results.map(row => {
-        const ingredientList = row.ingredients ? row.ingredients.split('; ').map(item => {
-            const [name, measure] = item.split('|');
-            return { name, measure };
-        }) : [];
+        console.log("User-generated cocktail details:", details);
+        if (!details) return null;
 
-        return new Cocktail({
-            idDrink: row.id,
-            strDrink: row.name,
-            strCategory: row.category,
-            strInstructions: row.instructions,
-            strDrinkThumb: row.imageUrl,
-            strGlass: row.glass,
-            isFavorite: row.isFavorite,
-            ingredientList: ingredientList,
+        // Get ingredients
+        const ingredients = await db.getAllAsync(`
+            SELECT i.name, ci.measure
+            FROM cocktail_ingredients ci
+            JOIN ingredients i ON ci.ingredientId = i.id
+            WHERE ci.cocktailId = ?
+        `, [cocktailId]);
+
+        // Combine all data into a complete cocktail object
+        return new CocktailDetails({
+            id: cocktailId,
+            name: thumb.name,
+            imageUrl: thumb.imageUrl,
+            isUserGenerated: true,
+            isFavorite: thumb.isFavorite,
+            category: details.category,
+            instructions: details.instructions,
+            glass: details.glass,
+            ingredientList: ingredients.map(i => ({
+                name: i.name,
+                measure: i.measure
+            }))
         });
-    });
-}
-
-export async function deleteCocktail(cocktailId) {
-    await db.runAsync(`
-        DELETE FROM cocktails WHERE id = ?
-    `, [cocktailId]);
-}
-
-export function getCocktailById(cocktailId) {
-    const cocktail = db.getFirstSync(`
-        SELECT * FROM cocktails WHERE id = ?
-    `, [cocktailId]);
-
-    const ingredients = db.getAllSync(`
-        SELECT i.name as ingredient, ci.measure
-        FROM cocktail_ingredients ci
-        JOIN ingredients i ON ci.ingredientId = i.id
-        WHERE ci.cocktailId = ?
-    `, [cocktailId]);
-
-    return {
-        ...cocktail,
-        ingredientList: ingredients
-    };
-}
-
-
-export function isCocktailTableEmpty() {
-    const result = db.getFirstSync(`
-        SELECT COUNT(*) as count FROM cocktails
-    `);
-    return Number(result.count) === 0;
-}
-
-export async function setAsFavorite(cocktailId, isFavorite) {
-    await db.runAsync(`
-        UPDATE cocktails
-        SET isFavorite = ?
-        WHERE id = ?
-    `, [isFavorite, cocktailId]);
-}
-
-export async function getFavoriteCocktails() {
-    const results = db.getAllSync(`
-        SELECT  * FROM cocktails WHERE isFavorite = 1
-    `);
-    return results;
+    } catch (error) {
+        console.log("Error getting user-generated cocktail:", error);
+        return null;
+    }
 }

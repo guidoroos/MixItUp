@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import CocktailForm from '../components/CocktailForm';
 import { colors } from '../Colors';
-import { upsertCocktail } from '../db/Database';
+import { upsertUserGenerated } from '../db/Database';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
 
@@ -12,7 +12,8 @@ function NewCocktailScreen({ navigation, route }) {
 
   const handleSave = async (cocktail) => {
     try {
-         await upsertCocktail(cocktail);
+        cocktail.isUserGenerated = true;
+         await upsertUserGenerated(cocktail);
     } catch (error) {
       navigation.navigate('Cocktails');
       return;

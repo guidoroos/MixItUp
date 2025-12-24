@@ -6,14 +6,17 @@ import NewCocktailScreen from './screens/NewCocktailScreen';
 import {colors} from './Colors';
 import { FavoritesContextProvider } from './context/FavoritesContext';
 import { Text } from 'react-native';
+import OnboardingScreen from './screens/OnboardingScreen';
+import {isCocktailTableEmpty} from './db/Database';
 
 
 export default function Navigation() {
+  const isEmpty = isCocktailTableEmpty();
   const Stack = createNativeStackNavigator();
   return (
     <FavoritesContextProvider>
-    <NavigationContainer>
-      <Stack.Navigator
+        <NavigationContainer>
+      <Stack.Navigator initialRouteName={isEmpty ? "Onboarding" : "Cocktails"}
       screenOptions={{
       
         headerStyle: {
@@ -25,16 +28,17 @@ export default function Navigation() {
         },
       }}
     >
-        <Stack.Screen name="Cocktails" component={HomeScreen} options = {{ headerTitle: "",
-          headerLeft: () => (
-            <Text style={{ 
-                fontSize: 24, 
-                fontWeight: 'bold', 
-                marginLeft: 8,
-                color: colors.primaryTint
-            }}>
-                Mix it up
-            </Text>
+     <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerTitle: ""}} />
+      <Stack.Screen name="Cocktails" component={HomeScreen} options = {{ headerTitle: "",
+        headerLeft: () => (
+          <Text style={{ 
+              fontSize: 24, 
+              fontWeight: 'bold', 
+              marginLeft: 8,
+              color: colors.primaryTint
+          }}>
+              Mix it up
+          </Text>
         ),
         }}  />
         <Stack.Screen name="CocktailDetail" component={CocktailDetailScreen} options={{ headerTitle: ""}} />

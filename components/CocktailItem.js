@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
+import colors from '../Colors';
 
 function CocktailItem({ cocktail, onPress }) {
   const favoriteContext = useContext(FavoritesContext);
@@ -71,8 +72,8 @@ const styles = StyleSheet.create({
     margin: 8,
     borderRadius: 8,
     elevation: 2,
-    backgroundColor: 'white',
-    shadowColor: 'black',
+    backgroundColor: colors.container,
+    shadowColor: colors.shadow,
     shadowOpacity: 0.25,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 4,
@@ -105,6 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
+    color: colors.onContainer,
   },
   heartIconContainer: {
     position: 'absolute',
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   heartIcon: {
-    shadowColor: 'black',
+    shadowColor: colors.onContainer,
     shadowOpacity: 0.75,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 4,

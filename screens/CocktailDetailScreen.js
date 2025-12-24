@@ -10,13 +10,16 @@ import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
 import { Alert } from 'react-native';
 import { colors } from '../Colors';
+import ShareButton from '../components/ShareButton';
 
 
 function CocktailDetailScreen({ route, navigation }) {
   const { cocktail } = route.params;
+  console.log("cocktail:", cocktail);
   const [imageError, setImageError] = useState(false);
 
   const favoriteContext = useContext(FavoritesContext);
+
   const isFavorite = favoriteContext.favoriteIds.includes(cocktail.id);
 
   useLayoutEffect(() => {
@@ -36,6 +39,8 @@ function CocktailDetailScreen({ route, navigation }) {
           >
             <Ionicons name="trash" size={32} color={colors.onToolbar} />
           </TouchableOpacity>
+
+          <ShareButton cocktail={cocktail} />
         </View>
       ),
     });

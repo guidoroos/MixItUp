@@ -1,8 +1,6 @@
 import { Pressable, View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import CategoryBadge from './CategoryBadge';
-import GlassRow from './GlassRow';
 import { colors } from '../Colors';
 
 function CocktailFavoritesItem({ cocktail, onPress, removeFavorite }) {
@@ -36,8 +34,6 @@ function CocktailFavoritesItem({ cocktail, onPress, removeFavorite }) {
           </View>
           <View style={styles.details}>
             <Text style={[styles.title, { paddingBottom: 12 }]}>{cocktail.name}</Text>
-            <CategoryBadge category={cocktail.category} />
-            <GlassRow glass={cocktail.glass} />
           </View>
         </View>
       </Pressable>
@@ -53,8 +49,8 @@ const styles = StyleSheet.create({
     margin: 8,
     borderRadius: 8,
     elevation: 2,
-    backgroundColor: 'white',
-    shadowColor: 'black',
+    backgroundColor: colors.container,
+    shadowColor: colors.shadow,
     shadowOpacity: 0.25,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 4,
@@ -67,8 +63,8 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   imageContainer: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     marginBottom: 8
   },
   image: {
@@ -85,6 +81,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 18,
+    color: colors.onContainer,
 
   },
   heartIcon: {

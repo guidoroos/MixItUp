@@ -14,6 +14,7 @@ const baseColors = {
   success: '#28A745',
   toolbar: '#FFFFFF',
   onToolbar: '#000000',
+  shadow: '#000000',
 };
 
 const darkColors = {
@@ -23,7 +24,7 @@ const darkColors = {
   border: '#E0E0E0',
   content: '#212529',
   contentSecondary: '#6C757D',
-  container: '#FFFFFF',
+  container: '#DAE0E2',
   onContainer: '#000000',
   primary: '#2E7D32',
   primaryTint: '#4CAF50',
@@ -31,12 +32,13 @@ const darkColors = {
   success: '#28A745',  
   toolbar: '#1F1F1F',
   onToolbar: '#FFFFFF',
+  shadow: '#9AA0A6',
 };
 
 const getColors = () => {
   try {
     const colorScheme = Appearance.getColorScheme();
-    return colorScheme === 'dark' ? darkColors : baseColors;
+    return colorScheme === 'light' ? darkColors : baseColors;
   } catch (error) {
     return baseColors;
   }

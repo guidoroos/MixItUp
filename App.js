@@ -1,73 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { getAllCocktails, getAndStorePopularCocktails } from './api/CocktailApi';
 import { initializeDatabase, isCocktailTableEmpty } from './db/Database';
 import { useEffect, useState, useContext } from 'react';
 import Navigation from './Navigation';
-import LoadingOverlay from './components/LoadingOverlay';
 import { colors } from './Colors';
 import ErrorOverlay from './components/ErrorOverlay';
+import { useLoad } from './context/LoadContext';
+import { LoadProvider } from './context/LoadContext';
 
-export default function App() {
+function AppContent() {
   const [dbInitialized, setDbInitialized] = useState(false);
-  const [error, setError] = useState(null);
-  const [loadingText, setLoadingText] = useState("Fetching recipes, this may take up to a minute...");
-  const [updateCount, setUpdateCount] = useState(0);
+  const [initError, setInitError] = useState(null);
+  const { loadCocktails } = useLoad();
 
+  if (!__DEV__) {
+  console.log = () => {};
+  console.debug = () => {};
+  console.info = () => {};
+}
 
   useEffect(() => {
-    initializeDB();
+    initialize();
   }, []);
 
-  const initializeDB = async () => {
-    try {
+  const initialize = async () => {
       try {
         await initializeDatabase();
+         setDbInitialized(true);
       } catch (error) {
-        setError('Failed to initialize database');
+        setInitError('Failed to initialize database');
       }
 
-      if (isCocktailTableEmpty()) {
-        await  getAllCocktails();
-        setDbInitialized(true);
-      }
-
+      loadCocktails();
+  
       setDbInitialized(true);
-    } catch (error) {
-    }
   };
 
-  useEffect(() => {
-    if (updateCount < 3) {
-      const timer = setTimeout(() => {
-        setUpdateCount(prev => prev + 1);
-        
-        switch (updateCount + 1) {
-          case 1:
-            setLoadingText("Still working on it, almost there...");
-            break;
-          case 2:
-            setLoadingText("Just a few more seconds...");
-            break;
-          case 3:
-            setLoadingText("Finalizing your recipes...");
-            break;
-        }
-      }, 5000);
+  
 
-      return () => clearTimeout(timer);
-    }
-  }, [updateCount, dbInitialized]);
-
-
-  if (error) {
-    return <ErrorOverlay message={error} onRetry={() => {
-      setError(null);
-      initializeDB();
+  if (initError) {
+    return <ErrorOverlay message={initError} onRetry={() => {
+      setInitError(null);
+      initialize();
     }} />;
-  } else if (!dbInitialized) {
-    return <LoadingOverlay text={loadingText} />;
-  }
+  } 
 
   return (
       <View style={styles.container}>
@@ -84,3 +60,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.container,
   },
 });
+
+export default function App() {
+  return (
+    <LoadProvider>
+      <AppContent />
+    </LoadProvider>
+  );
+}
