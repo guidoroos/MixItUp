@@ -21,9 +21,9 @@ export default {
       "**/*"
     ],
     splash: {
-      image: "./assets/appIcon.png",
+      image: "./assets/ic_launcher_foreground.png",
       resizeMode: "contain",
-      backgroundColor: "#0f724c"
+      backgroundColor: "#2E2E2E"
     },
     ios: {
       supportsTablet: true,
