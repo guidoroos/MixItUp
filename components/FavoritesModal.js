@@ -2,6 +2,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import FavoritesList from './FavoritesList';
 import { colors } from '../Colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const FavoritesModal = ({ 
   visible, 
@@ -10,6 +11,8 @@ const FavoritesModal = ({
   onPressCocktail, 
   onRemoveFavorite 
 }) => {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Modal
       visible={visible}
@@ -17,7 +20,7 @@ const FavoritesModal = ({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.title}>Favorites</Text>
           <TouchableOpacity

@@ -1,5 +1,6 @@
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FilterSelector from './FilterSelector';
 import { colors } from '../Colors';
 
@@ -9,6 +10,8 @@ const FilterModal = ({
   onFilterSelect, 
   selectedFilter 
 }) => {
+  const insets = useSafeAreaInsets();
+  
   const handleFilterSelect = (filter) => {
     onFilterSelect(filter);
     onClose();
@@ -21,7 +24,7 @@ const FilterModal = ({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.title}>Choose Filter</Text>
           <TouchableOpacity
@@ -43,7 +46,6 @@ const FilterModal = ({
     </Modal>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

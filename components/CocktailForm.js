@@ -43,10 +43,11 @@ function CocktailForm({ cocktailToEdit, onSave, setFavorite }) {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            accessible={false}
-        >
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+        enabled={Platform.OS === 'ios'} 
+        accessible={false}
+    >
             <ScrollView 
                 style={styles.scrollView} 
                 showsVerticalScrollIndicator={false}

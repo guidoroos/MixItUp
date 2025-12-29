@@ -24,7 +24,7 @@ const darkColors = {
   border: '#E0E0E0',
   content: '#212529',
   contentSecondary: '#6C757D',
-  container: '#DAE0E2',
+  container: '#D1D7D9',
   onContainer: '#000000',
   primary: '#2E7D32',
   primaryTint: '#4CAF50',
@@ -38,7 +38,7 @@ const darkColors = {
 const getColors = () => {
   try {
     const colorScheme = Appearance.getColorScheme();
-    return colorScheme === 'light' ? darkColors : baseColors;
+    return colorScheme === 'dark' ? darkColors : baseColors;
   } catch (error) {
     return baseColors;
   }

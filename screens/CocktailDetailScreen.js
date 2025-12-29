@@ -21,6 +21,7 @@ function CocktailDetailScreen({ route, navigation }) {
   const favoriteContext = useContext(FavoritesContext);
 
   const isFavorite = favoriteContext.favoriteIds.includes(cocktail.id);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -70,8 +71,10 @@ function CocktailDetailScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.innerContainer]}>
-        <View style={styles.imageContainer}>
+
+      <View style={[isFullScreen ? [styles.innerContainer, { overflow: 'visible'}] : styles.innerContainer]}>
+         <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
+        <View style={isFullScreen ? null : styles.imageContainer}>
           <Image
             source={
               imageError || !cocktail.imageUrl
@@ -80,7 +83,8 @@ function CocktailDetailScreen({ route, navigation }) {
             }
             style={styles.image}
             onError={() => setImageError(true)}
-          />
+            />
+          
           <Pressable
             style={styles.heartIconContainer}
             onPress={() => favoriteContext.setFavorite(cocktail.id, !isFavorite)}
@@ -90,13 +94,14 @@ function CocktailDetailScreen({ route, navigation }) {
           >
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
-              size={30}
+              size={isFullScreen ? 45 : 30}
               color={isFavorite ? "#ff4444" : "#ffffff"}
               style={styles.heartIcon}
               accessible={false}
             />
           </Pressable>
         </View>
+        </TouchableOpacity>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{cocktail.name}</Text>
 
@@ -132,7 +137,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: '100%',
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   imageContainer: {
     width: '100%',

@@ -61,13 +61,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ddd',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     minWidth: 80,
     alignItems: 'center',
-  },
-  selectedButton: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
   },
   buttonText: {
     fontSize: 14,

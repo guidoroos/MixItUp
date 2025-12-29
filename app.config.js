@@ -28,7 +28,7 @@ export default {
     ios: {
       supportsTablet: true,
       icon: "./assets/appIcon.png",
-      bundleIdentifier: "com.guidoroos.mixitup",
+      bundleIdentifier: "com.guidoroos.CocktailApp",
       buildNumber: "1.0.0",
       infoPlist: {
         CFBundleDisplayName: "Mix it up",
@@ -43,13 +43,20 @@ export default {
       permissions: [
         "INTERNET",
         "ACCESS_NETWORK_STATE"
-      ]
+      ],
+      adaptiveIcon: {
+        foregroundImage: "./assets/ic_launcher_foreground.png",
+        backgroundColor: "#2E2E2E"
+      }
     },
+    plugins: [
+      "expo-sqlite"
+    ],
     extra: {
       eas: {
         projectId: "f9392efa-8cbe-4348-806d-1ab61d325ff5"
       },
       apiSecret: process.env.API_SECRET
-    }
+    },
   }
 };

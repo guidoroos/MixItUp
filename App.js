@@ -7,6 +7,7 @@ import { colors } from './Colors';
 import ErrorOverlay from './components/ErrorOverlay';
 import { useLoad } from './context/LoadContext';
 import { LoadProvider } from './context/LoadContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function AppContent() {
   const [dbInitialized, setDbInitialized] = useState(false);

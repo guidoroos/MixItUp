@@ -1,7 +1,6 @@
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import { useEffect, useState, useLayoutEffect, useCallback, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { getAllCocktailsFromDB } from '../db/Database';
 import CocktailList from '../components/CocktailList';
 import FilterModal from '../components/FilterModal';
 import FavoritesModal from '../components/FavoritesModal';
@@ -10,7 +9,6 @@ import { FavoritesContext } from '../context/FavoritesContext';
 import { useMemo } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLoad } from '../context/LoadContext';
-import { ActivityIndicator, Text } from 'react-native';
 import { getCocktailDetails } from '../api/CocktailApi';
 import { getCocktailIdsByCategory } from '../api/CocktailApi';
 import { getCocktailIdsByIngredient } from '../api/CocktailApi';
@@ -130,8 +128,6 @@ function HomeScreen({ navigation, route }) {
     setSelectedFilter(spirit);
   };
 
-  
-
   if (error) {
     return (
       <View style={styles.centered}>
@@ -144,7 +140,6 @@ function HomeScreen({ navigation, route }) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
@@ -181,7 +176,7 @@ function HomeScreen({ navigation, route }) {
           favoriteContext.setFavorite(cocktail.id, isFavorite);
         }}
       />
-
+      
       <FilterModal
         visible={isFilterModalVisible}
         onClose={() => setIsFilterModalVisible(false)}
@@ -194,10 +189,9 @@ function HomeScreen({ navigation, route }) {
         onClose={() => setIsFavoritesModalVisible(false)}
         cocktails={favoriteCocktails}
         onPressCocktail={async cocktail => {
-      
            let details = await getCocktailDetails(cocktail);
           navigation.navigate('CocktailDetail', { cocktail: details });
-            setIsFavoritesModalVisible(false);
+          setIsFavoritesModalVisible(false);
         }}
         onRemoveFavorite={(id) => {
           favoriteContext.setFavorite(id, false);
@@ -255,4 +249,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
+  loadingContainer: {
+  zIndex: 1000,
+   alignItems: 'center',
+},
 });
