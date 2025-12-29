@@ -168,9 +168,7 @@ function HomeScreen({ navigation, route }) {
         style={styles.cocktailList}
         cocktails={filteredCocktails}
         onPressCocktail={async cocktail => {
-          let details = await getCocktailDetails(cocktail);
-          console.log("details:", details);
-          navigation.navigate('CocktailDetail', { cocktail: details })
+          navigation.navigate('CocktailDetail', { cocktail: cocktail })
         }}
         onSetFavorite={(cocktail, isFavorite) => {
           favoriteContext.setFavorite(cocktail.id, isFavorite);
@@ -189,8 +187,7 @@ function HomeScreen({ navigation, route }) {
         onClose={() => setIsFavoritesModalVisible(false)}
         cocktails={favoriteCocktails}
         onPressCocktail={async cocktail => {
-           let details = await getCocktailDetails(cocktail);
-          navigation.navigate('CocktailDetail', { cocktail: details });
+          navigation.navigate('CocktailDetail', { cocktail: cocktail });
           setIsFavoritesModalVisible(false);
         }}
         onRemoveFavorite={(id) => {

@@ -1,17 +1,16 @@
-import { View, StyleSheet, Text, Pressable } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { deleteCocktail } from '../db/Database';
-import { useLayoutEffect, useState } from 'react';
+import { deleteCocktail } from '../db/Database'; 
+import { getCocktailDetails } from '../api/CocktailApi';
+import { useLayoutEffect, useState, useEffect, useContext } from 'react'; 
 import { TouchableOpacity } from 'react-native';
 import GlassRow from '../components/GlassRow';
 import CategoryBadge from '../components/CategoryBadge';
 import { FavoritesContext } from '../context/FavoritesContext';
-import { useContext } from 'react';
 import { Alert } from 'react-native';
 import { colors } from '../Colors';
 import ShareButton from '../components/ShareButton';
-
 
 function CocktailDetailScreen({ route, navigation }) {
   const { cocktail } = route.params;
@@ -22,13 +21,27 @@ function CocktailDetailScreen({ route, navigation }) {
 
   const isFavorite = favoriteContext.favoriteIds.includes(cocktail.id);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [details, setDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(true);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      setLoadingDetails(true);
+      console.log("Fetching details for cocktail:", cocktail);
+      const data = await getCocktailDetails(cocktail);
+      console.log("Fetched details:", data);
+      setDetails(data);
+      setLoadingDetails(false);
+    };
+    fetchDetails();
+  }, [cocktail]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.iconList}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('UpsertCocktail', { cocktail: cocktail })}
+            onPress={() => navigation.navigate('UpsertCocktail', { cocktail: details })}
             style={{ position: 'relative' }}
           >
             <Ionicons name="pencil" size={32} color={colors.onToolbar} />
@@ -41,7 +54,7 @@ function CocktailDetailScreen({ route, navigation }) {
             <Ionicons name="trash" size={32} color={colors.onToolbar} />
           </TouchableOpacity>
 
-          <ShareButton cocktail={cocktail} />
+          <ShareButton cocktail={details} />
         </View>
       ),
     });
@@ -69,12 +82,19 @@ function CocktailDetailScreen({ route, navigation }) {
     );
   };
 
+  if (loadingDetails) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-
-      <View style={[isFullScreen ? [styles.innerContainer, { overflow: 'visible'}] : styles.innerContainer]}>
+      <View style={styles.innerContainer}>
          <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
-        <View style={isFullScreen ? null : styles.imageContainer}>
+        <View style={isFullScreen ? styles.fullScreenImageContainer : styles.imageContainer}>
           <Image
             source={
               imageError || !cocktail.imageUrl
@@ -106,13 +126,13 @@ function CocktailDetailScreen({ route, navigation }) {
           <Text style={styles.title}>{cocktail.name}</Text>
 
           {cocktail.category && (
-            <CategoryBadge style={styles.categoryBadge} category={cocktail.category} />
+            <CategoryBadge style={styles.categoryBadge} category={details.category} />
           )}
         </View>
-        <GlassRow glass={cocktail.glass} style={styles.glassRow} />
+        <GlassRow glass={details.glass} style={styles.glassRow} />
 
         <Text style={styles.subTitle}>Ingredients</Text>
-        {cocktail.ingredientList.map((ingredient, index) => (
+        {details.ingredientList.map((ingredient, index) => (
           <Text key={index} style={styles.ingredientText}>
             - {ingredient.measure} {ingredient.name}
           </Text>
@@ -142,6 +162,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: 200,
+  },
+  fullScreenImageContainer: {
+    width: '100%',
+    height: 400,
   },
   image: {
     width: '100%',
@@ -210,5 +234,11 @@ const styles = StyleSheet.create({
     right: 8,
     padding: 4,
     zIndex: 10,
+  },
+    loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
 });
