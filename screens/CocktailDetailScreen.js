@@ -139,7 +139,7 @@ function CocktailDetailScreen({ route, navigation }) {
         ))}
 
         <Text style={styles.subTitle}>Instructions</Text>
-        <Text style={styles.instructionText}>{cocktail.instructions}</Text>
+        <Text style={styles.instructionText}>{details.instructions}</Text>
       </View>
     </View>
   );

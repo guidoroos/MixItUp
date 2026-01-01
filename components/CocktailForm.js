@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../Colors';
 import { useCallback } from 'react';
 
-function CocktailForm({ cocktailToEdit, onSave, setFavorite }) {
+function CocktailForm({ cocktailToEdit, onSave}) {
     const [cocktail, setCocktail] = useState({
         id: cocktailToEdit?.id || null,
         name: cocktailToEdit?.name || '',

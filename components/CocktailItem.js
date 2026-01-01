@@ -30,7 +30,7 @@ function CocktailItem({ cocktail, onPress }) {
               style={styles.image}
               placeholder={require('../assets/placeholder.png')}
               contentFit="cover"
-              transition={200}
+              cachePolicy="memory-disk"
               accessible={true}
               accessibilityRole="image"
               accessibilityLabel={`${cocktail.name} image`}

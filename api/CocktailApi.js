@@ -49,6 +49,7 @@ export async function getCocktailById(id) {
   try {
     const response = await fetch(`${baseUrl}lookup.php?i=${id}`);
     const data = await response.json();
+    console.log("Fetched cocktail data by ID:", data);
 
     return data.drinks && data.drinks.length > 0
       ? new CocktailDetails(data.drinks[0], true)

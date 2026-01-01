@@ -4,29 +4,34 @@ import { colors } from '../Colors';
 import { upsertUserGenerated } from '../db/Database';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
+import Cocktail from '../model/Cocktail';
 
 
 function NewCocktailScreen({ navigation, route }) {
 
-  const favoriteContext = useContext(FavoritesContext);
 
   const handleSave = async (cocktail) => {
     try {
-        cocktail.isUserGenerated = true;
-         await upsertUserGenerated(cocktail);
+      cocktail.isUserGenerated = true;
+      let id = await upsertUserGenerated(cocktail);
+
+      let baseCocktail = new Cocktail(
+        cocktail.name,
+        cocktail.imageUrl,
+        id,
+        true,
+        false
+      );
+
+      navigation.navigate('CocktailDetail', { cocktail: baseCocktail });
     } catch (error) {
       navigation.navigate('Cocktails');
-      return;
     }
-    
-    navigation.navigate('Cocktails', { savedCocktail: cocktail });
-    navigation.navigate('CocktailDetail', { cocktail: cocktail });
   };
 
   return (
     <View style={styles.container}>
-      <CocktailForm cocktailToEdit={route.params?.cocktail} onSave={handleSave} 
-      setFavorite={(id, isFavorite) => favoriteContext.setFavorite(id, isFavorite)} />
+      <CocktailForm cocktailToEdit={route.params?.cocktail} onSave={handleSave} />
     </View>
   );
 }
