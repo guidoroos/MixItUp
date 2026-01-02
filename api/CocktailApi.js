@@ -1,7 +1,7 @@
 
 import axios from 'axios'
 import CocktailDetails from '../model/CocktailDetails'
-import { getDetailsForUserGenerated } from '../db/Database';
+import { getDetailsForUserGenerated, cacheDetails } from '../db/Database';
 import Constants from 'expo-constants';
 import Cocktail from '../model/Cocktail';
 
@@ -71,6 +71,7 @@ export async function getCocktailDetails(cocktail) {
     } else {
         // Fetch from API for standard cocktails
         details = await getCocktailById(cocktail.id);
+        cacheDetails(cocktail.id, details);
     }
 
     return details;

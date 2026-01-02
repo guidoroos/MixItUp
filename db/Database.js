@@ -145,7 +145,7 @@ export function isCocktailTableEmpty() {
     }
 }
 
-export async function setAsFavorite(cocktailId, isFavorite) {
+async function setAsFavorite(cocktailId, isFavorite) {
     try {
         const isFavoriteValue = isFavorite ? 1 : 0;
         await db.runAsync(`
@@ -177,6 +177,67 @@ export async function getFavoriteCocktails() {
     }
 }
 
+/**
+ * Caches cocktail details and optionally marks as user-generated
+ * @param {string} cocktailId - The ID of the cocktail
+ * @param {Object} cocktail - The cocktail details object
+ * @param {boolean} isUserGenerated - Whether to mark as user-generated
+ */
+export async function cacheDetails(cocktailId, cocktail, isUserGenerated = false) {
+    try {
+        // Set isUserGenerated flag if needed
+        if (isUserGenerated) {
+            await db.runAsync(
+                `UPDATE cocktails SET isUserGenerated = 1 WHERE id = ?`,
+                [cocktailId]
+            );
+        }
+        
+        // Reuse the existing saveCocktailDetails function
+        await saveCocktailDetails(cocktailId, cocktail);
+        
+        return cocktailId;
+    } catch (error) {
+        console.log("Error caching cocktail details:", error);
+        throw error;
+    }
+}
+
+/**
+ * Saves cocktail details (category, instructions, glass, ingredients) to the database
+ * @param {string} cocktailId - The ID of the cocktail
+ * @param {Object} cocktail - The cocktail details object containing category, instructions, glass, and ingredientList
+ */
+export async function saveCocktailDetails(cocktailId, cocktail) {
+    try {
+        console.log("Saving cocktail details for ID:", cocktailId);
+        
+        // Save details
+        await db.runAsync(`INSERT OR IGNORE INTO cocktail_details (id, category, instructions, glass) VALUES (?, ?, ?, ?)`,
+            [cocktailId, cocktail.category, cocktail.instructions, cocktail.glass]);
+            
+        // Clear existing ingredients
+        await db.runAsync(`DELETE FROM cocktail_ingredients WHERE cocktailId = ?`, [cocktailId]);
+
+        // Insert all ingredients
+        for (const ing of cocktail.ingredientList) {
+            await db.runAsync(`INSERT OR IGNORE INTO ingredients (name) VALUES (?)`, [ing.name]);
+        }
+
+        // Link ingredients to cocktail
+        for (const ing of cocktail.ingredientList) {
+            const ingredientResult = db.getFirstSync(`SELECT id FROM ingredients WHERE name = ?`, [ing.name]);
+            await db.runAsync(`INSERT OR IGNORE INTO cocktail_ingredients VALUES (?, ?, ?)`,
+                [cocktailId, ingredientResult.id, ing.measure]);
+        }
+    } catch (error) {
+        console.log("Error saving cocktail details:", error);
+        throw error;
+    }
+}
+
+
+
 export async function upsertUserGenerated(cocktail) {
     try {
         let cocktailId = cocktail.id;
@@ -201,23 +262,7 @@ export async function upsertUserGenerated(cocktail) {
         upsertCocktail(cocktailBase);
 
         console.log("Upserting user-generated cocktail details for ID:", cocktail);
-        await db.runAsync(`INSERT OR IGNORE INTO cocktail_details (id, category, instructions, glass) VALUES (?, ?, ?, ?)`,
-            [cocktailId, cocktail.category, cocktail.instructions, cocktail.glass]);
-
-        await db.runAsync(`DELETE FROM cocktail_ingredients WHERE cocktailId = ?`, [cocktailId]);
-
-
-        // Insert all ingredients at once
-        for (const ing of cocktail.ingredientList) {
-            await db.runAsync(`INSERT OR IGNORE INTO ingredients (name) VALUES (?)`, [ing.name]);
-        }
-
-        // Then batch the cocktail_ingredients
-        for (const ing of cocktail.ingredientList) {
-            const ingredientResult = db.getFirstSync(`SELECT id FROM ingredients WHERE name = ?`, [ing.name]);
-            await db.runAsync(`INSERT OR IGNORE INTO cocktail_ingredients VALUES (?, ?, ?)`,
-                [cocktailId, ingredientResult.id, ing.measure]);
-        }
+        await saveCocktailDetails(cocktailId, cocktail);
 
         return cocktailId;
     } catch (error) {
@@ -225,7 +270,6 @@ export async function upsertUserGenerated(cocktail) {
         throw error;
     }
 }
-
 /**
  * Get complete details for a user-generated cocktail
  * @param {string} cocktailId The ID of the cocktail

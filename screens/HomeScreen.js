@@ -88,9 +88,17 @@ function HomeScreen({ navigation, route }) {
     if (cocktails.length === 0) return;
 
     const filterCocktails = async () => {
-      let filtered = cocktails.filter(cocktail =>
-        cocktail.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      let filtered = cocktails.filter(cocktail => {
+        const name = cocktail.name.toLowerCase();
+        const term = searchTerm.toLowerCase();
+
+        if (name.startsWith(term)) {
+          return true;
+        }
+
+        const words = name.split(' ');
+        return words.some(word => word.startsWith(term));
+      });
 
       if (selectedFilter) {
         if (selectedFilter.spirit) {
@@ -174,7 +182,7 @@ function HomeScreen({ navigation, route }) {
           favoriteContext.setFavorite(cocktail.id, isFavorite);
         }}
       />
-      
+
       <FilterModal
         visible={isFilterModalVisible}
         onClose={() => setIsFilterModalVisible(false)}
@@ -247,7 +255,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   loadingContainer: {
-  zIndex: 1000,
-   alignItems: 'center',
-},
+    zIndex: 1000,
+    alignItems: 'center',
+  },
 });

@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ActivityIndicator, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { deleteCocktail } from '../db/Database'; 
@@ -91,6 +91,7 @@ function CocktailDetailScreen({ route, navigation }) {
   }
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <View style={styles.innerContainer}>
          <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
@@ -142,6 +143,7 @@ function CocktailDetailScreen({ route, navigation }) {
         <Text style={styles.instructionText}>{details.instructions}</Text>
       </View>
     </View>
+    </ScrollView>
   );
 }
 
