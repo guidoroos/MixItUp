@@ -1,4 +1,4 @@
-import { View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Platform  } from 'react-native';
 import { useEffect, useState, useLayoutEffect, useCallback, useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import CocktailList from '../components/CocktailList';
@@ -52,12 +52,12 @@ function HomeScreen({ navigation, route }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={styles.iconList}>
+        <View style={{ ...styles.iconList, marginTop: Platform.OS === 'android' ? 8 : 0 }}>
           <TouchableOpacity
             onPress={() => handleFilterPress()}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="funnel-outline" size={isTabletScreen ? 34 : 28} color={colors.onToolbar} />
+            <Ionicons name="funnel-outline" size={isTabletScreen ? 34 : 26} color={colors.onToolbar} />
             {selectedFilter !== null && (
               <View
                 style={{
@@ -77,14 +77,14 @@ function HomeScreen({ navigation, route }) {
             onPress={() => navigation.navigate('UpsertCocktail')}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="add" size={isTabletScreen ? 40 : 34} color={colors.onToolbar} />
+            <Ionicons name="add" size={isTabletScreen ? 40 : 32} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setIsFavoritesModalVisible(true)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="star-outline" size={isTabletScreen ? 34 : 28} color={colors.onToolbar} />
+            <Ionicons name="star-outline" size={isTabletScreen ? 34 : 26} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
       ),

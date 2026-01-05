@@ -24,7 +24,7 @@ const ShareButton = ({ cocktail }) => {
       ]}
       accessibilityLabel="Share this cocktail"
     >
-      <Ionicons name="share-social" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
+      <Ionicons name="share-social" size={isTabletScreen ? 36 : 28} color={colors.onToolbar} />
     </Pressable>
   );
 };

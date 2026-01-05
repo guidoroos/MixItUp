@@ -1,9 +1,9 @@
-import { View, StyleSheet, Text, Pressable, ActivityIndicator, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ActivityIndicator, ScrollView, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { deleteCocktail } from '../db/Database'; 
+import { deleteCocktail } from '../db/Database';
 import { getCocktailDetails } from '../api/CocktailApi';
-import { useLayoutEffect, useState, useEffect, useContext } from 'react'; 
+import { useLayoutEffect, useState, useEffect, useContext } from 'react';
 import { TouchableOpacity } from 'react-native';
 import GlassRow from '../components/GlassRow';
 import CategoryBadge from '../components/CategoryBadge';
@@ -41,19 +41,19 @@ function CocktailDetailScreen({ route, navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={styles.iconList}>
+        <View style={{ ...styles.iconList, marginTop: Platform.OS === 'android' ? 8 : 0 }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('UpsertCocktail', { cocktail: details })}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="pencil" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
+            <Ionicons name="pencil" size={isTabletScreen ? 36 : 28} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleDeleteCocktail(cocktail.id)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="trash" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
+            <Ionicons name="trash" size={isTabletScreen ? 36 : 28} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <ShareButton cocktail={details} />
@@ -93,58 +93,58 @@ function CocktailDetailScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView style ={styles.scrollview}>
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-         <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
-        <View style={isFullScreen ? isTabletScreen ? styles.fullScreenImageContainerTablet : styles.fullScreenImageContainer : styles.imageContainer}>
-          <Image
-            source={
-              imageError || !cocktail.imageUrl
-                ? require('../assets/placeholder.png')
-                : { uri: cocktail.imageUrl }
-            }
-            style={styles.image}
-            onError={() => setImageError(true)}
-            />
-          
-          <Pressable
-            style={styles.heartIconContainer}
-            onPress={() => favoriteContext.setFavorite(cocktail.id, !isFavorite)}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Ionicons
-              name={isFavorite ? "heart" : "heart-outline"}
-              size={isFullScreen ? 45 : isTabletScreen ? 36 : 30}
-              color={isFavorite ? "#ff4444" : "#ffffff"}
-              style={styles.heartIcon}
-              accessible={false}
-            />
-          </Pressable>
+    <ScrollView style={styles.scrollview}>
+      <View style={styles.container}>
+        <View style={styles.innerContainer}>
+          <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
+            <View style={isFullScreen ? isTabletScreen ? styles.fullScreenImageContainerTablet : styles.fullScreenImageContainer : styles.imageContainer}>
+              <Image
+                source={
+                  imageError || !cocktail.imageUrl
+                    ? require('../assets/placeholder.png')
+                    : { uri: cocktail.imageUrl }
+                }
+                style={styles.image}
+                onError={() => setImageError(true)}
+              />
+
+              <Pressable
+                style={styles.heartIconContainer}
+                onPress={() => favoriteContext.setFavorite(cocktail.id, !isFavorite)}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              >
+                <Ionicons
+                  name={isFavorite ? "heart" : "heart-outline"}
+                  size={isFullScreen ? 45 : isTabletScreen ? 36 : 30}
+                  color={isFavorite ? "#ff4444" : "#ffffff"}
+                  style={styles.heartIcon}
+                  accessible={false}
+                />
+              </Pressable>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.titleRow}>
+            <Text style={{ ...styles.title, fontSize: isTabletScreen ? 40 : 24 }}>{cocktail.name}</Text>
+
+            {cocktail.category && (
+              <CategoryBadge style={styles.categoryBadge} category={details.category} />
+            )}
+          </View>
+          <GlassRow glass={details.glass} style={styles.glassRow} />
+
+          <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Ingredients</Text>
+          {details.ingredientList.map((ingredient, index) => (
+            <Text key={index} style={{ ...styles.ingredientText, fontSize: isTabletScreen ? 20 : 16, marginBottom: isTabletScreen ? 8 : 0 }}>
+              - {ingredient.measure} {ingredient.name}
+            </Text>
+          ))}
+
+          <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Instructions</Text>
+          <Text style={{ ...styles.instructionText, fontSize: isTabletScreen ? 22 : 16 }}>{details.instructions}</Text>
         </View>
-        </TouchableOpacity>
-        <View style={styles.titleRow}>
-          <Text style={{ ...styles.title, fontSize: isTabletScreen ? 40 : 24 }}>{cocktail.name}</Text>
-
-          {cocktail.category && (
-            <CategoryBadge style={styles.categoryBadge} category={details.category} />
-          )}
-        </View>
-        <GlassRow glass={details.glass} style={styles.glassRow} />
-
-        <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Ingredients</Text>
-        {details.ingredientList.map((ingredient, index) => (
-          <Text key={index} style={{ ...styles.ingredientText, fontSize: isTabletScreen ? 20 : 16, marginBottom: isTabletScreen ? 8 : 0 }}>
-            - {ingredient.measure} {ingredient.name}
-          </Text>
-        ))}
-
-        <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Instructions</Text>
-        <Text style={{ ...styles.instructionText, fontSize: isTabletScreen ? 22 : 16 }}>{details.instructions}</Text>
       </View>
-    </View>
     </ScrollView>
   );
 }
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
   },
-   fullScreenImageContainerTablet: {
+  fullScreenImageContainerTablet: {
     width: '100%',
     height: 1200,
   },
@@ -185,14 +185,14 @@ const styles = StyleSheet.create({
   },
   titleRow: {
     padding: 12,
-    backgroundColor: colors.background ,
+    backgroundColor: colors.background,
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    flex: 1, 
+    flex: 1,
     marginRight: 16,
     color: colors.primaryTint,
   },
@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     marginRight: 8,
+    marginTop: 8,
   },
   heartIconContainer: {
     position: 'absolute',
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     padding: 4,
     zIndex: 10,
   },
-    loadingContainer: {
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
