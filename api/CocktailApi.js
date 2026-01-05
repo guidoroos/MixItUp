@@ -122,3 +122,30 @@ export async function getCocktailIdsByIngredient(ingredient) {
   }
 }
 
+/**
+ * Get cocktail IDs by multiple ingredients
+ * @param {string[]} ingredients Array of ingredient names (e.g., ['Gin', 'Dry Vermouth', 'Anis'])
+ * @returns {Promise<string[]>} Array of cocktail IDs
+ */
+export async function getCocktailIdsByMultiIngredient(ingredients) {
+  try {
+    const formattedIngredients = ingredients.map(ingredient => ingredient.toLowerCase().replace(/\s+/g, '_'));
+    const ingredientString = formattedIngredients.join(',');
+    const response = await fetch(`${baseUrl}filter.php?i=${encodeURIComponent(ingredientString)}`);
+    const data = await response.json();
+    
+    if (!data.drinks) return [];
+    
+    // Direct extraction of IDs only
+    const ids = new Array(data.drinks.length);
+    for (let i = 0; i < data.drinks.length; i++) {
+      ids[i] = data.drinks[i].idDrink;
+    }
+    
+    return ids;
+  } catch (error) {
+    console.log(`Failed to fetch cocktails by ingredients ${ingredients.join(', ')}:`, error);
+    return [];
+  }
+}
+

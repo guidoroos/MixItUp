@@ -9,9 +9,11 @@ import { FavoritesContext } from '../context/FavoritesContext';
 import { useMemo } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLoad } from '../context/LoadContext';
-import { getCocktailDetails } from '../api/CocktailApi';
 import { getCocktailIdsByCategory } from '../api/CocktailApi';
 import { getCocktailIdsByIngredient } from '../api/CocktailApi';
+import { getCocktailIdsByMultiIngredient } from '../api/CocktailApi';
+import IngredientChipsView from '../components/IngredientChipsView';
+import AddFilterIngredientModal from '../components/AddFilterIngredientModal';
 
 
 function HomeScreen({ navigation, route }) {
@@ -20,8 +22,10 @@ function HomeScreen({ navigation, route }) {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [isFavoritesModalVisible, setIsFavoritesModalVisible] = useState(false);
+  const [isFilterIngredientModalVisible, setIsFilterIngredientModalVisible] = useState(false);
   const favoriteContext = useContext(FavoritesContext);
   const { loading, error, cocktails, handleDelete, handleSave } = useLoad();
+  const [filterIngredients, setFilterIngredients] = useState([]);
 
   const favoriteCocktails = useMemo(() =>
     cocktails.filter(cocktail => favoriteContext.favoriteIds?.includes(cocktail.id)),
@@ -100,6 +104,11 @@ function HomeScreen({ navigation, route }) {
         return words.some(word => word.startsWith(term));
       });
 
+      if (filterIngredients.length > 0) {
+        const ids = await getCocktailIdsByMultiIngredient(filterIngredients);
+        filtered = filtered.filter(cocktail => ids.includes(cocktail.id));
+      }
+
       if (selectedFilter) {
         if (selectedFilter.spirit) {
           const ids = await getCocktailIdsByIngredient(selectedFilter.spirit);
@@ -121,7 +130,7 @@ function HomeScreen({ navigation, route }) {
     };
 
     filterCocktails();
-  }, [searchTerm, selectedFilter, cocktails]);
+  }, [searchTerm, selectedFilter, cocktails, filterIngredients]);
 
   const handleFilterPress = useCallback(() => {
     if (selectedFilter !== null) {
@@ -158,7 +167,7 @@ function HomeScreen({ navigation, route }) {
         <TextInput
           style={styles.searchInput}
           placeholder="Search cocktails..."
-          placeholderTextColor={"#999"}
+          placeholderTextColor={colors.onBackgroundSecondary}
           color={colors.content}
           value={searchTerm}
           onChangeText={setSearchTerm}
@@ -172,6 +181,14 @@ function HomeScreen({ navigation, route }) {
           </TouchableOpacity>
         )}
       </View>
+
+      <IngredientChipsView
+        ingredients={filterIngredients}
+        onAdd={() => setIsFilterIngredientModalVisible(true)}
+        onRemove={item => setFilterIngredients(filterIngredients.filter(ing => ing !== item))}
+        style ={styles.ingredientChips}
+      />
+
       <CocktailList
         style={styles.cocktailList}
         cocktails={filteredCocktails}
@@ -200,6 +217,17 @@ function HomeScreen({ navigation, route }) {
         }}
         onRemoveFavorite={(id) => {
           favoriteContext.setFavorite(id, false);
+        }}
+      />
+
+      <AddFilterIngredientModal
+        visible={isFilterIngredientModalVisible}
+        onClose={() => setIsFilterIngredientModalVisible(false)}
+        ingredient={filterIngredients[0]}
+        onChangeIngredient={text => setFilterIngredients([text])}
+        onSubmit={text => {
+          setFilterIngredients([...filterIngredients, text]);
+          setIsFilterIngredientModalVisible(false);
         }}
       />
     </View>
@@ -257,5 +285,9 @@ const styles = StyleSheet.create({
   loadingContainer: {
     zIndex: 1000,
     alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  ingredientChips: {
+    marginHorizontal: 16,
   },
 });

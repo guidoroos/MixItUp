@@ -76,7 +76,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             value={cocktail.name}
                             onChangeText={(value) => updateField('name', value)}
                             placeholder="Enter cocktail name"
-                            placeholderTextColor="#999"
+                             placeholderTextColor={colors.onBackgroundSecondary}
                             accessible={true}
                             accessibilityLabel="Cocktail name"
                             accessibilityHint="Enter the name of your cocktail"
@@ -98,7 +98,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 value={cocktail.category}
                                 onChangeText={(value) => updateField('category', value)}
                                 placeholder="e.g., Ordinary Drink"
-                                placeholderTextColor="#999"
+                                 placeholderTextColor={colors.onBackgroundSecondary}
                                 accessible={true}
                                 accessibilityLabel="Cocktail category"
                                 accessibilityHint="Enter the category type of the cocktail"
@@ -119,7 +119,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 value={cocktail.glass}
                                 onChangeText={(value) => updateField('glass', value)}
                                 placeholder="e.g., Old-fashioned"
-                                placeholderTextColor="#999"
+                                 placeholderTextColor={colors.onBackgroundSecondary}
                                 accessible={true}
                                 accessibilityLabel="Glass type"
                                 accessibilityHint="Enter the recommended glass for this cocktail"
@@ -141,7 +141,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             value={cocktail.imageUrl}
                             onChangeText={(value) => updateField('imageUrl', value)}
                             placeholder="https://example.com/image.jpg"
-                            placeholderTextColor="#999"
+                             placeholderTextColor={colors.onBackgroundSecondary}
                             keyboardType="url"
                             autoCapitalize="none"
                             accessible={true}
@@ -228,7 +228,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             value={cocktail.instructions}
                             onChangeText={(value) => updateField('instructions', value)}
                             placeholder="Enter preparation instructions..."
-                            placeholderTextColor="#999"
+                            placeholderTextColor={colors.onBackgroundSecondary}
                             multiline={true}
                             numberOfLines={4}
                             textAlignVertical="top"

@@ -1,11 +1,12 @@
 
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../Colors';
 
 const GlassRow = ({ glass, style }) => {
   return (
     <View style={[styles.glassRow, style]}>
-      <Ionicons name="wine" size={20} color="black" />
+      <Ionicons name="wine" size={24} color={colors.onBackgroundSecondary} />
       <Text style={styles.glassText}>{glass}</Text>
     </View>
   );
@@ -19,9 +20,9 @@ const styles = StyleSheet.create({
   },
   glassText: {
     marginLeft: 8,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
-    color: '#666',
+    color: colors.onBackgroundSecondary,
   }
 });
 

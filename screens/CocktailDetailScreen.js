@@ -91,7 +91,7 @@ function CocktailDetailScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style ={styles.scrollview}>
     <View style={styles.container}>
       <View style={styles.innerContainer}>
          <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
@@ -150,6 +150,9 @@ function CocktailDetailScreen({ route, navigation }) {
 export default CocktailDetailScreen;
 
 const styles = StyleSheet.create({
+  scrollview: {
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1, 
     marginRight: 16,
-    color: colors.onBackground,
+    color: colors.primaryTint,
   },
   categoryText: {
     fontSize: 18,
