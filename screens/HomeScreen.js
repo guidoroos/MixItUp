@@ -38,6 +38,7 @@ function HomeScreen({ navigation, route }) {
   useFocusEffect(
     useCallback(() => {
       if (route.params?.savedCocktail) {
+        console.log("Saved cocktail detected in params:", route.params.savedCocktail);
         handleSave(route.params.savedCocktail);
         navigation.setParams({ savedCocktail: null });
       }

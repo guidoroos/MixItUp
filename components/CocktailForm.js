@@ -2,20 +2,22 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Pressable, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../Colors';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { isTablet } from '../DeviceUtil';
 
-function CocktailForm({ cocktailToEdit, onSave}) {
+function CocktailForm({ cocktailToEdit, detailsToEdit, onSave}) {
     const isTabletScreen = isTablet();
+
+
 
     const [cocktail, setCocktail] = useState({
         id: cocktailToEdit?.id || null,
         name: cocktailToEdit?.name || '',
-        category: cocktailToEdit?.category || '',
-        instructions: cocktailToEdit?.instructions || '',
+        category: detailsToEdit?.category || '',
+        instructions: detailsToEdit?.instructions || '',
         imageUrl: cocktailToEdit?.imageUrl || '',
-        glass: cocktailToEdit?.glass || '',
-        ingredientList: cocktailToEdit?.ingredientList || [],
+        glass: detailsToEdit?.glass || '',
+        ingredientList: detailsToEdit?.ingredientList || [],
         isFavorite: cocktailToEdit?.isFavorite || false
     });
 
@@ -43,6 +45,19 @@ function CocktailForm({ cocktailToEdit, onSave}) {
         newIngredients.splice(index, 1);
         updateField('ingredientList', newIngredients);
     }, [cocktail.ingredientList]);
+
+    useEffect (() => {
+        setCocktail({
+            id: cocktailToEdit?.id || null,
+            name: cocktailToEdit?.name || '',
+            category: detailsToEdit?.category || '',
+            instructions: detailsToEdit?.instructions || '',
+            imageUrl: cocktailToEdit?.imageUrl || '',
+            glass: detailsToEdit?.glass || '',
+            ingredientList: detailsToEdit?.ingredientList || [],
+            isFavorite: cocktailToEdit?.isFavorite || false
+        });
+    }, [cocktailToEdit, detailsToEdit]);
 
     return (
         <KeyboardAvoidingView

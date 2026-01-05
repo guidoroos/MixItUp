@@ -43,7 +43,9 @@ function CocktailDetailScreen({ route, navigation }) {
       headerRight: () => (
         <View style={{ ...styles.iconList, marginTop: Platform.OS === 'android' ? 8 : 0 }}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('UpsertCocktail', { cocktail: details })}
+            onPress={() => {
+              navigation.navigate('UpsertCocktail', { cocktail: cocktail });
+            }}
             style={{ position: 'relative' }}
           >
             <Ionicons name="pencil" size={isTabletScreen ? 36 : 28} color={colors.onToolbar} />
