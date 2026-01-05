@@ -2,8 +2,11 @@ import { Pressable, StyleSheet, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { shareCocktail } from '../ShareCocktailUtil';
 import { colors } from '../Colors';
+import { isTablet } from '../DeviceUtil';
 
 const ShareButton = ({ cocktail }) => {
+  const isTabletScreen = isTablet();
+
   const handleShare = async () => {
     try {
       await shareCocktail(cocktail);
@@ -21,7 +24,7 @@ const ShareButton = ({ cocktail }) => {
       ]}
       accessibilityLabel="Share this cocktail"
     >
-      <Ionicons name="share-social" size={32} color={colors.onToolbar} />
+      <Ionicons name="share-social" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
     </Pressable>
   );
 };

@@ -145,7 +145,7 @@ export function isCocktailTableEmpty() {
     }
 }
 
-async function setAsFavorite(cocktailId, isFavorite) {
+export async function setAsFavorite(cocktailId, isFavorite) {
     try {
         const isFavoriteValue = isFavorite ? 1 : 0;
         await db.runAsync(`

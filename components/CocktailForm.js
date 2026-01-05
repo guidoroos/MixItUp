@@ -3,8 +3,11 @@ import { View, Text, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Pl
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../Colors';
 import { useCallback } from 'react';
+import { isTablet } from '../DeviceUtil';
 
 function CocktailForm({ cocktailToEdit, onSave}) {
+    const isTabletScreen = isTablet();
+
     const [cocktail, setCocktail] = useState({
         id: cocktailToEdit?.id || null,
         name: cocktailToEdit?.name || '',
@@ -72,7 +75,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             Name (Required)
                         </Text>
                         <TextInput
-                            style={styles.input}
+                            style={{ ...styles.input, fontSize: isTabletScreen ? 20 : 16, maxWidth: isTabletScreen ? "50%" : "100%" }}
                             value={cocktail.name}
                             onChangeText={(value) => updateField('name', value)}
                             placeholder="Enter cocktail name"
@@ -94,7 +97,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 Category
                             </Text>
                             <TextInput
-                                style={styles.input}
+                                style={{ ...styles.input, fontSize: isTabletScreen ? 20 : 16}}
                                 value={cocktail.category}
                                 onChangeText={(value) => updateField('category', value)}
                                 placeholder="e.g., Ordinary Drink"
@@ -115,7 +118,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 Glass Type
                             </Text>
                             <TextInput
-                                style={styles.input}
+                                style={{ ...styles.input, fontSize: isTabletScreen ? 20 : 16 }}
                                 value={cocktail.glass}
                                 onChangeText={(value) => updateField('glass', value)}
                                 placeholder="e.g., Old-fashioned"
@@ -137,7 +140,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             Image URL
                         </Text>
                         <TextInput
-                            style={styles.input}
+                            style={{ ...styles.input, fontSize: isTabletScreen ? 20 : 16, maxWidth: isTabletScreen ? "50%" : "100%" }}
                             value={cocktail.imageUrl}
                             onChangeText={(value) => updateField('imageUrl', value)}
                             placeholder="https://example.com/image.jpg"
@@ -166,7 +169,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 accessible={false}
                             >
                                 <TextInput
-                                    style={[styles.input, styles.ingredientInput]}
+                                    style={[styles.input, styles.ingredientInput, { fontSize: isTabletScreen ? 20 : 16 }]}
                                     value={ingredient.measure}
                                     onChangeText={(value) => updateIngredientMeasure(index, value)}
                                     placeholder={`Measure ${index + 1}`}
@@ -177,7 +180,7 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                                 />
 
                                 <TextInput
-                                    style={[styles.input, styles.ingredientInput]}
+                                    style={[styles.input, styles.ingredientInput, { fontSize: isTabletScreen ? 20 : 16 }]}
                                     value={ingredient.name}
                                     onChangeText={(value) => updateIngredientName(index, value)}
                                     placeholder={`Ingredient ${index + 1}`}
@@ -224,13 +227,16 @@ function CocktailForm({ cocktailToEdit, onSave}) {
                             Instructions (Required)
                         </Text>
                         <TextInput
-                            style={[styles.input, styles.textArea]}
+                            style={[styles.input, styles.textArea,
+                                 { fontSize: isTabletScreen ? 20 : 16 }, 
+                                 { minHeight: isTabletScreen ? 200 : 100 }
+                                 ]}
                             value={cocktail.instructions}
                             onChangeText={(value) => updateField('instructions', value)}
                             placeholder="Enter preparation instructions..."
                             placeholderTextColor={colors.onBackgroundSecondary}
                             multiline={true}
-                            numberOfLines={4}
+                            numberOfLines={isTabletScreen ? 8 : 4}
                             textAlignVertical="top"
                             accessible={true}
                             accessibilityLabel="Cocktail instructions"
@@ -309,7 +315,6 @@ const styles = StyleSheet.create({
         color: colors.onContainer,
     },
     textArea: {
-        minHeight: 100,
         paddingTop: 12,
     },
     ingredientRow: {

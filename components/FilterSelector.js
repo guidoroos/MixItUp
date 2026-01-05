@@ -3,11 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import spirits from '../model/Spirits';
 import drinkTypes from '../model/DrinkType';
 import { colors } from '../Colors';
+import {isTablet } from '../DeviceUtil';
 
 const FilterSelector = ({ onSelectionChange }) => {
+  const isTabletScreen = isTablet();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select Spirit</Text>
+      <Text style={{ ...styles.title, fontSize: isTabletScreen ? 20 : 18 }}>Select Spirit</Text>
       <View style={styles.buttonContainer}>
         {spirits.map((spirit) => (
           <TouchableOpacity
@@ -15,14 +17,14 @@ const FilterSelector = ({ onSelectionChange }) => {
             style={styles.spiritButton}
             onPress={() => onSelectionChange({ spirit, type: null })}
           >
-            <Text style={styles.buttonText}>
+            <Text style={{ ...styles.buttonText, fontSize: isTabletScreen ? 18 : 14 }}>
               {spirit}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={[styles.title, { paddingTop: 20 }]}>Select Drink Type</Text>
+      <Text style={[styles.title, { paddingTop: 20 }, isTabletScreen && { fontSize: 20 } ]}>Select Drink Type</Text>
       <View style={styles.buttonContainer}>
         {drinkTypes.map((type) => (
           <TouchableOpacity
@@ -30,7 +32,7 @@ const FilterSelector = ({ onSelectionChange }) => {
             style={styles.spiritButton}
             onPress={() => onSelectionChange({ spirit: null, type })}
           >
-            <Text style={styles.buttonText}>
+            <Text style={{ ...styles.buttonText, fontSize: isTabletScreen ? 18 : 14 }}>
               {type}
             </Text>
           </TouchableOpacity>

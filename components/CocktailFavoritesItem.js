@@ -2,8 +2,11 @@ import { Pressable, View, Text, StyleSheet, Platform, TouchableOpacity } from 'r
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../Colors';
+import { isTablet } from '../DeviceUtil';
 
 function CocktailFavoritesItem({ cocktail, onPress, removeFavorite }) {
+  const isTabletScreen = isTablet();
+
   return (
     <View style={styles.gridItem}>
       <Pressable
@@ -20,20 +23,20 @@ function CocktailFavoritesItem({ cocktail, onPress, removeFavorite }) {
             onPress={() => removeFavorite(cocktail.id)}
             activeOpacity={0.7}
           >
-            <Ionicons name="trash" size={26} color={colors.content} />
+            <Ionicons name="trash" size={isTabletScreen ? 32 : 26} color={colors.content} />
           </TouchableOpacity>
 
           <View style={styles.imageContainer}>
             <Image source={{ uri: cocktail.imageUrl }} style={styles.image} placeholder={require('../assets/placeholder.png')} />
             <Ionicons
               name={"heart"}
-              size={24}
+              size={isTabletScreen ? 28 : 22}
               color={"#ff4444"}
               style={styles.heartIcon}
             />
           </View>
           <View style={styles.details}>
-            <Text style={[styles.title, { paddingBottom: 12 }]}>{cocktail.name}</Text>
+            <Text style={[styles.title, { paddingBottom: 12 }, isTabletScreen && { fontSize: 28}]}>{cocktail.name}</Text>
           </View>
         </View>
       </Pressable>
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
     color: colors.onContainer,
 
   },

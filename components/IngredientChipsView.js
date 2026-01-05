@@ -20,7 +20,7 @@ function IngredientChipsView({ ingredients, onAdd, onRemove }) {
       {canAddMore && (
         <IconTextButton
           icon="add"
-          text="Add ingredient"
+          text="Ingredient"
           onPress={onAdd}
         />
       )}
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 8,
+    marginHorizontal: 4,
   },
   chipsContainer: {
     flex: 1,

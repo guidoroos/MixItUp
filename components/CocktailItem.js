@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { useContext } from 'react';
 import colors from '../Colors';
+import isTablet from '../DeviceUtil';
 
 function CocktailItem({ cocktail, onPress }) {
   const favoriteContext = useContext(FavoritesContext);
@@ -44,7 +45,7 @@ function CocktailItem({ cocktail, onPress }) {
             >
               <Ionicons
                 name={isFavorite ? "heart" : "heart-outline"}
-                size={24}
+                size={isTablet ? 32 : 28}
                 color={isFavorite ? "#ff4444" : "#ffffff"}
                 style={styles.heartIcon}
                 accessible={false}
@@ -88,7 +89,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 150,
     height: 150,
-    marginBottom: 8
+    marginBottom: 8,
+    position: 'relative'
   },
   image: {
     width: '100%',
@@ -109,9 +111,10 @@ const styles = StyleSheet.create({
     color: colors.onContainer,
   },
   heartIconContainer: {
+    zIndex: 10,
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 6,
+    right: 6,
     padding: 4,
   },
   heartIcon: {

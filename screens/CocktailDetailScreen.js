@@ -11,6 +11,7 @@ import { FavoritesContext } from '../context/FavoritesContext';
 import { Alert } from 'react-native';
 import { colors } from '../Colors';
 import ShareButton from '../components/ShareButton';
+import { isTablet } from '../DeviceUtil';
 
 function CocktailDetailScreen({ route, navigation }) {
   const { cocktail } = route.params;
@@ -23,6 +24,7 @@ function CocktailDetailScreen({ route, navigation }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [details, setDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(true);
+  const isTabletScreen = isTablet();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -44,14 +46,14 @@ function CocktailDetailScreen({ route, navigation }) {
             onPress={() => navigation.navigate('UpsertCocktail', { cocktail: details })}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="pencil" size={32} color={colors.onToolbar} />
+            <Ionicons name="pencil" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => handleDeleteCocktail(cocktail.id)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="trash" size={32} color={colors.onToolbar} />
+            <Ionicons name="trash" size={isTabletScreen ? 36 : 32} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <ShareButton cocktail={details} />
@@ -95,7 +97,7 @@ function CocktailDetailScreen({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
          <TouchableOpacity onPress={() => setIsFullScreen(!isFullScreen)}>
-        <View style={isFullScreen ? styles.fullScreenImageContainer : styles.imageContainer}>
+        <View style={isFullScreen ? isTabletScreen ? styles.fullScreenImageContainerTablet : styles.fullScreenImageContainer : styles.imageContainer}>
           <Image
             source={
               imageError || !cocktail.imageUrl
@@ -115,7 +117,7 @@ function CocktailDetailScreen({ route, navigation }) {
           >
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
-              size={isFullScreen ? 45 : 30}
+              size={isFullScreen ? 45 : isTabletScreen ? 36 : 30}
               color={isFavorite ? "#ff4444" : "#ffffff"}
               style={styles.heartIcon}
               accessible={false}
@@ -124,7 +126,7 @@ function CocktailDetailScreen({ route, navigation }) {
         </View>
         </TouchableOpacity>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>{cocktail.name}</Text>
+          <Text style={{ ...styles.title, fontSize: isTabletScreen ? 40 : 24 }}>{cocktail.name}</Text>
 
           {cocktail.category && (
             <CategoryBadge style={styles.categoryBadge} category={details.category} />
@@ -132,15 +134,15 @@ function CocktailDetailScreen({ route, navigation }) {
         </View>
         <GlassRow glass={details.glass} style={styles.glassRow} />
 
-        <Text style={styles.subTitle}>Ingredients</Text>
+        <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Ingredients</Text>
         {details.ingredientList.map((ingredient, index) => (
-          <Text key={index} style={styles.ingredientText}>
+          <Text key={index} style={{ ...styles.ingredientText, fontSize: isTabletScreen ? 20 : 16, marginBottom: isTabletScreen ? 8 : 0 }}>
             - {ingredient.measure} {ingredient.name}
           </Text>
         ))}
 
-        <Text style={styles.subTitle}>Instructions</Text>
-        <Text style={styles.instructionText}>{details.instructions}</Text>
+        <Text style={{ ...styles.subTitle, fontSize: isTabletScreen ? 24 : 18, marginTop: isTabletScreen ? 24 : 12 }}>Instructions</Text>
+        <Text style={{ ...styles.instructionText, fontSize: isTabletScreen ? 22 : 16 }}>{details.instructions}</Text>
       </View>
     </View>
     </ScrollView>
@@ -171,6 +173,10 @@ const styles = StyleSheet.create({
   fullScreenImageContainer: {
     width: '100%',
     height: 400,
+  },
+   fullScreenImageContainerTablet: {
+    width: '100%',
+    height: 1200,
   },
   image: {
     width: '100%',

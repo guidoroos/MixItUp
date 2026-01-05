@@ -24,16 +24,18 @@ export function FavoritesContextProvider({ children }) {
 
     async function add(id) {
         try {
-            await setAsFavorite(id, 1);
             setIds((currentIds) => [...currentIds, id]);
+            await setAsFavorite(id, 1);
+         
         } catch (error) {
         }
     }
 
     async function remove(id) {
         try {
-            await setAsFavorite(id, 0);
             setIds((currentIds) => currentIds.filter((currentId) => currentId !== id));
+            await setAsFavorite(id, 0);
+        
         } catch (error) {
         }
     }

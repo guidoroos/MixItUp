@@ -1,7 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../Colors';
+import { isTablet } from '../DeviceUtil';
 
 function IngredientChip({ label, onRemove }) {
+   const isTabletScreen = isTablet();
+
 function capitalizeWords(str) {
   return str.replace(/\b\w/g, l => l.toUpperCase());
 }
@@ -9,10 +12,10 @@ function capitalizeWords(str) {
   return (
      <TouchableOpacity onPress={onRemove}>
     <View style={styles.container}>
-      <Text style={styles.label}>{capitalizeWords(label)}</Text>
-     
-        <Text style={styles.closeIcon}>×</Text>
-     
+      <Text style={{ ...styles.label, fontSize: isTabletScreen ? 22 : 16 }}>{capitalizeWords(label)}</Text>
+
+        <Text style={{ ...styles.closeIcon, fontSize: isTabletScreen ? 24 : 18 }}>×</Text>
+
     </View>
      </TouchableOpacity>
   );
@@ -34,7 +37,6 @@ const styles = StyleSheet.create({
     color: colors.onPrimary,
   },
   closeIcon: {
-    fontSize: 20,
     color: colors.onPrimary,
   },
 });

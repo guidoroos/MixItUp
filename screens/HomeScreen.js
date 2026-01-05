@@ -13,7 +13,8 @@ import { getCocktailIdsByCategory } from '../api/CocktailApi';
 import { getCocktailIdsByIngredient } from '../api/CocktailApi';
 import { getCocktailIdsByMultiIngredient } from '../api/CocktailApi';
 import IngredientChipsView from '../components/IngredientChipsView';
-import AddFilterIngredientModal from '../components/AddFilterIngredientModal';
+import AddFilterIngredientDialog from '../components/AddFilterIngredientDialog';
+import { isTablet } from '../DeviceUtil';
 
 
 function HomeScreen({ navigation, route }) {
@@ -31,6 +32,8 @@ function HomeScreen({ navigation, route }) {
     cocktails.filter(cocktail => favoriteContext.favoriteIds?.includes(cocktail.id)),
     [cocktails, favoriteContext.favoriteIds]
   );
+
+  const isTabletScreen = isTablet();
 
   useFocusEffect(
     useCallback(() => {
@@ -54,7 +57,7 @@ function HomeScreen({ navigation, route }) {
             onPress={() => handleFilterPress()}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="funnel-outline" size={28} color={colors.onToolbar} />
+            <Ionicons name="funnel-outline" size={isTabletScreen ? 34 : 28} color={colors.onToolbar} />
             {selectedFilter !== null && (
               <View
                 style={{
@@ -74,14 +77,14 @@ function HomeScreen({ navigation, route }) {
             onPress={() => navigation.navigate('UpsertCocktail')}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="add" size={36} color={colors.onToolbar} />
+            <Ionicons name="add" size={isTabletScreen ? 40 : 34} color={colors.onToolbar} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setIsFavoritesModalVisible(true)}
             style={{ position: 'relative' }}
           >
-            <Ionicons name="star-outline" size={30} color={colors.onToolbar} />
+            <Ionicons name="star-outline" size={isTabletScreen ? 34 : 28} color={colors.onToolbar} />
           </TouchableOpacity>
         </View>
       ),
@@ -220,7 +223,7 @@ function HomeScreen({ navigation, route }) {
         }}
       />
 
-      <AddFilterIngredientModal
+      <AddFilterIngredientDialog
         visible={isFilterIngredientModalVisible}
         onClose={() => setIsFilterIngredientModalVisible(false)}
         ingredient={filterIngredients[0]}

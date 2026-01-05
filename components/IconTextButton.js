@@ -1,12 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { colors } from '../Colors';
+import { isTablet } from '../DeviceUtil';
 
 export function IconTextButton({ icon, text, onPress }) {
+
+    const isTabletScreen = isTablet();
+
   return (
     <TouchableOpacity style={styles.iconTextButton} onPress={onPress}>
-      <Ionicons name={icon} size={20} color={colors.onBackground} />
-      <Text style={styles.iconTextButtonText}>{text}</Text>
+      <Ionicons name={icon} size={isTabletScreen ? 28 : 24} color={colors.primaryTint} />
+      <Text style={{ ...styles.iconTextButtonText, fontSize: isTabletScreen ? 22 : 16 }}>{text}</Text>
     </TouchableOpacity>
   );
 }
@@ -14,7 +18,6 @@ export function IconTextButton({ icon, text, onPress }) {
 const styles = StyleSheet.create({
   iconTextButton: {
     flexDirection: 'row',
-    backgroundColor: colors.contentPrimary,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 8,
@@ -26,6 +29,5 @@ const styles = StyleSheet.create({
   iconTextButtonText: {
     marginLeft: 6,
     color: colors.onBackground,
-    fontSize: 16,
   },
 });
