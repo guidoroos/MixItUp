@@ -1,35 +1,42 @@
-# <img src="assets/appIcon.png" alt="Mix It Up" width="64" height="64">   Mix It Up
+# 🍹 Mix It Up — React Native Case Study
 
-A React Native cocktail app designed for party experimentation. Users can quickly discover cocktail recipes, filter by available spirits, and save favorites - perfect for beginners who want to try something new at parties.
+A React Native cocktail app designed for rapid discovery and party experimentation. Users can search recipes, filter by spirits, and manage favorites. This project serves as a **velocity benchmark**, demonstrating the ability to master a new framework and ship to both major app stores in under two months.
 
+**[Google Play Store](https://play.google.com/store/apps/details?id=com.guidoroos.CocktailApp)** | **[Apple App Store](https://apps.apple.com/nl/app/mix-it-up/id6756966094)**
 
-## 🛠️ Tech Stack
+---
 
-- **React Native** + **Expo** - Cross-platform mobile development
-- **React Navigation** - Screen navigation and modals
-- **React Context** - State management for favorites system
-- **TheCocktailDB API** - External API integration for recipe data
-- **Expo SQLite ** - For data persistance
-- **Custom Design System** - Themed components with consistent styling
+### 🚀 Rapid Deployment Potential
+This project is a proof-of-concept for **Development Velocity**. Built from the ground up starting with zero prior React Native experience, it achieved:
+* **Zero to Production:** Full mastery of the stack and successful deployment to the App Store and Play Store within two months.
+* **Cross-Platform Parity:** Simultaneous release on iOS and Android with 100% feature parity and consistent performance.
+* **Agile Prototyping:** Rapid iteration from a "learning project" to a polished, public-facing application.
 
-## ✨ Key Features
+---
 
-- Search functionality for finding hundreds of cocktail recipes
-- Smart filtering by spirits (Vodka, Gin, Tequila, etc.) and drink types
-- Persistent favorites using React Context
-- Modal-based UI for filters and favorites
-- API integration with proper error handling
-- Responsive design optimized for mobile
+### 🛠️ Tech Stack
+* **Framework:** React Native + Expo for cross-platform efficiency
+* **Navigation:** React Navigation (Stack and Modal-based flows)
+* **State Management:** React Context for the favorites system
+* **Persistence:** Expo SQLite for local data storage
+* **Integration:** TheCocktailDB API with robust error handling
 
-## 🏗️ Architecture Highlights
+### ⚙️ Key Engineering Features
+* **Modular Architecture:** Clean separation of concerns between data layers, hooks, and reusable UI components.
+* **Data Management:** Efficient API integration with handled loading states and cached results.
+* **Custom Design System:** Themed components designed for a consistent, responsive mobile experience.
 
-- **Modular component structure** with reusable UI elements
-- **Clean separation of concerns** between data, screens, components, and context
-- **Efficient API data management** with proper loading states
-- **Cross-platform compatibility** tested on iOS and Android
+### 🤝 Available for Hire
+I specialize in **KMP, Mobile Native (Kotlin/Swift)**. 
 
-## 🚀 Getting Started
+**[Contact me via LinkedIn](https://www.linkedin.com/in/guido-roos9)**
 
-```bash
-npm install
-npx expo start
+---
+
+### 🛠️ Getting Started
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   npx expo start
+   ```
