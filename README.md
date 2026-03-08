@@ -29,7 +29,7 @@ This project is a proof-of-concept for **Development Velocity**. Built from the 
 ### 🤝 Available for Hire
 I specialize in **KMP, Mobile Native (Kotlin/Swift)**. 
 
-**[Contact me via LinkedIn](https://www.linkedin.com/in/guido-roos9)**
+**[Contact me via LinkedIn](https://www.linkedin.com/in/guido-roos91)**
 
 ---
 
